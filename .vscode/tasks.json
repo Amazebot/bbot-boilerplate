@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Bot",
+      "type": "npm",
+      "script": "start",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Watch Bot",
+      "type": "npm",
+      "script": "watch",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}

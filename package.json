@@ -1,0 +1,29 @@
+{
+  "name": "bbot-boilerplate",
+  "version": "0.0.1",
+  "description": "Gets you started prototyping bots with bBot",
+  "main": "index.js",
+  "license": "MIT",
+  "author": "Tim Kinnane <tim.kinnane@amazebot.chat>",
+  "contributors": [],
+  "engines": {
+    "node": "> 8.0.0",
+    "npm": "> 5.0.0"
+  },
+  "bot": {
+    "name": "boilerplate",
+    "flag": "🇦🇺"
+  },
+  "dependencies": {
+    "bbot": "1.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  },
+  "scripts": {
+    "setup": "node init.js",
+    "start": "node index.js",
+    "watch": "nodemon",
+    "debug": "nodemon --inspect"
+  }
+}
