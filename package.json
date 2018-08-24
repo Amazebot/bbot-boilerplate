@@ -23,7 +23,7 @@
   "scripts": {
     "setup": "node init.js",
     "start": "node index.js",
-    "watch": "nodemon",
-    "debug": "nodemon --inspect"
+    "watch": "nodemon index.js",
+    "debug": "nodemon --inspect index.js"
   }
 }

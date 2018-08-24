@@ -7,7 +7,7 @@ const bot = require('bbot')
  *
  * Test with "Hello bots!"
 */
-bot.global.text(/(hi|hello).*bots/, (b) => b.respond('Hello 👋'), {
+bot.global.text(/\b(hi|hello)\b.*bots/, (b) => b.respond('Hello 👋'), {
   id: 'hello-bots'
 })
 
@@ -19,7 +19,7 @@ bot.global.text(/(hi|hello).*bots/, (b) => b.respond('Hello 👋'), {
  *
  * Test with "bot Hello" or just "Hello" in a DM.
 */
-bot.global.direct(/hi|hello/i, (b) => b.reply('Hey there.'), {
+bot.global.direct(/\b(hi|hello)\b/i, (b) => b.reply('Hey there.'), {
   id: 'hello-direct'
 })
 
@@ -28,7 +28,7 @@ bot.global.direct(/hi|hello/i, (b) => b.reply('Hey there.'), {
  *
  * Test with "Hello anyone?"
 */
-bot.global.text(/hi|hello/i, (b) => b.respondVia('react', ':wave:'), {
+bot.global.text(/\b(hi|hello)\b/i, (b) => b.respondVia('react', ':wave:'), {
   id: 'hello-react'
 })
 
@@ -38,7 +38,7 @@ bot.global.text(/hi|hello/i, (b) => b.respondVia('react', ':wave:'), {
  *
  * Test with "Hello baby!"
  */
-bot.global.text(/baby/i, (b) => b.respondVia('react', ':baby:'), {
+bot.global.text(/\bbaby\b/i, (b) => b.respondVia('react', ':baby:'), {
   id: 'baby-react', force: true
 })
 
