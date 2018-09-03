@@ -66,7 +66,7 @@ inquirer.prompt([
     )
   }
   if (answers.env) {
-    const env = `BOT_LOG_LEVEL=debug\rBOT_NAME=bot\rBOT_ALIAS=bb\rBOT_SHELL_USER_NAME=user\rBOT_SHELL_USER_ID=111\rBOT_SHELL_ROOM=shell`
+    const env = `BOT_LOG_LEVEL=debug\rBOT_NAME=${answers.bot}\rBOT_ALIAS=bb\rBOT_SHELL_USER_NAME=user\rBOT_SHELL_USER_ID=111\rBOT_SHELL_ROOM_NAME=shell`
     await writeFile('.env', env, { encoding: 'utf8', flag: 'w' })
   }
 })
