@@ -1,8 +1,11 @@
 const fs = require('fs')
+const cpm = require('child_process')
 const { promisify } = require('util')
 const inquirer = require('./node_modules/inquirer')
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
+const copyFile = promisify(fs.copyFile)
+const exec = promisify(cpm.exec)
 
 async function replaceInFile (file, regex, value) {
   const content = await readFile(file, 'utf8')
@@ -66,7 +69,8 @@ inquirer.prompt([
     )
   }
   if (answers.env) {
-    const env = `BOT_LOG_LEVEL=debug\rBOT_NAME=${answers.bot}\rBOT_ALIAS=bb\rBOT_SHELL_USER_NAME=user\rBOT_SHELL_USER_ID=111\rBOT_SHELL_ROOM_NAME=shell`
-    await writeFile('.env', env, { encoding: 'utf8', flag: 'w' })
+    await copyFile('.env.example', '.env')
+    await replaceInFile('.env', /boilerplate/, answers.bot)
+    await exec('open .env')
   }
 })
