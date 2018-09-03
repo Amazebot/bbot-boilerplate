@@ -7,7 +7,7 @@ const bot = require('bbot')
  *
  * Test with "Hello bots!"
 */
-bot.global.text(/\b(hi|hello)\b.*bots/, (b) => b.respond('Hello 👋'), {
+bot.global.text(/(hi|hello) bots/, (b) => b.respond('Hello 👋'), {
   id: 'hello-bots'
 })
 
@@ -25,10 +25,13 @@ bot.global.direct(/\b(hi|hello)\b/i, (b) => b.reply('Hey there.'), {
 
 /**
  * `respondVia` allows using custom platform methods to dispatch response.
+ * You can also set semantic matching condition attributes instead of a regex.
  *
- * Test with "Hello anyone?"
+ * Test with "Hello anyone?" or "Hi all."
 */
-bot.global.text(/\b(hi|hello)\b/i, (b) => b.respondVia('react', ':wave:'), {
+bot.global.text({
+  contains: [ 'hi', 'hello' ]
+}, (b) => b.respondVia('react', ':wave:'), {
   id: 'hello-react'
 })
 
@@ -38,13 +41,16 @@ bot.global.text(/\b(hi|hello)\b/i, (b) => b.respondVia('react', ':wave:'), {
  *
  * Test with "Hello baby!"
  */
-bot.global.text(/\bbaby\b/i, (b) => b.respondVia('react', ':baby:'), {
+bot.global.text({
+  contains: 'baby'
+}, (b) => b.respondVia('react', ':baby:'), {
   id: 'baby-react', force: true
 })
 
 /**
- * Branch callbacks allow asynchronous responding, if they return a promise.
- * State (b) includes branch matching attributes, see bbot.chat/docs/thought.
+ * The state `match` attribute contains the results from the matching function
+ * (RegExp in this case) that triggered the current branch callback.
+ * Branch callbacks also allow asynchronous responding if they return a promise.
  *
  * Test with "bot ping back in 5 seconds"
 */
@@ -75,37 +81,60 @@ bot.global.text(/attach image/i, (b) => {
 }, { id: 'attach-image' })
 
 /**
- * The state `match` attribute contains the results from the matching function
- * that triggered the current branch callback. In this case, a regex match, but
- * custom matchers might have different structure.
+ * The `envelope` provides helpers for adding rich-message payloads before
+ * responding. Preparing envelopes before dispatch also allows changing the
+ * user/room the envelope is addressed to or dispatching multiple envelopes.
+ *
+ * Test with "I want a prize"
+ */
+bot.global.text({
+  contains: 'prize'
+}, (b) => {
+  b.envelope.write('Choose your fate! 🚪... 🎁 ')
+  b.envelope.attach({ color: '#f4426e' })
+  b.envelope.payload
+    .quickReply({ text: 'Door number 1' })
+    .quickReply({ text: 'Door number 2' })
+    .quickReply({ text: 'Door number 3' })
+  return b.respond()
+}, { id: 'door-prize-intro' })
+
+/**
+ * The `conditions` attribute contains results of semantic condition matching
+ * and capture groups. Each condition can be given a key for easy reference.
  *
  * Test with "what's behind door number 2"
  */
-bot.global.text(/door number ([1-3]{1})/, (b) => {
-  switch (b.match[1]) {
+bot.global.text({
+  door: { after: 'door', range: '1-3' }
+}, (b) => {
+  switch (b.conditions.captured.door) {
     case '1': return b.respond(`You win nothing 💔`)
     case '2': return b.respond(`You win a monkey 🐒`)
     case '3': return b.respond(`It's a new car!! 🚗`)
   }
-}, { id: 'door-prize' })
+}, { id: 'door-prize-award' })
 
 /**
  * `request` provides simple interfaces for making external requests, allowing
- * you to make use of external content in branch callbacks.
+ * you to make use of external content like API data in branch callbacks.
  *
  * Test with "Beetlejuice awards?"
  */
-bot.global.text(/(.*) awards/i, (b) => {
+bot.global.text({
+  before: 'awards'
+}, (b) => {
   const apiKey = process.env.OMDB_API_KEY
   if (!apiKey) return b.respond('Sorry, you need an API key for omdbapi.com')
+
   return b.bot.request.get(`http://www.omdbapi.com/`, {
-    t: b.match[1],
+    t: b.conditions.captured,
     apikey: apiKey
   }).then((film) => {
     if (film.Response === 'True') {
       return (film.Awards === 'N/A')
-        ? b.respond(`${b.match[1]} (${film.Year}): Won no awards.`)
-        : b.respond(`${b.match[1]} (${film.Year}): ${film.Awards}`)
+        ? b.respond(`${film.Title} (${film.Year}): Won no awards.`)
+        : b.respond(`${film.Title} (${film.Year}): ${film.Awards}`)
     } else {
       return b.respond(`Can't find any film by that name.`)
     }
@@ -115,9 +144,11 @@ bot.global.text(/(.*) awards/i, (b) => {
 /**
  * Bot settings can be defined at run time, overruling environment and cli args.
  *
- * In this case, we rename the bot to match the example descriptions below.
+ * In this case, we can rename the bot for easier access to direct scripts.
+ *
+ * Test by restarting after un-commenting below, then "bb hi"
  */
-bot.settings.set('name', 'bot')
+// bot.settings.set('name', 'bb')
 
 /**
  * Custom options can be added to the bot, with the full config utility of bBot,
@@ -142,7 +173,9 @@ bot.settings.extend({
  *
  * Test with "bot where are you from"
  */
-bot.global.direct(/where are you from/i, (b) => {
+bot.global.direct({
+  contains: 'where are you from'
+}, (b) => {
   return b.respond(`${bot.settings.get('flag')}`)
 }, { id: 'where-from' })
 
@@ -152,7 +185,9 @@ bot.global.direct(/where are you from/i, (b) => {
  *
  * Test with "beetlejuice" three times.
  */
-bot.global.text(/beetlejuice/i, (b) => {
+bot.global.text({
+  contains: 'beetlejuice'
+}, (b) => {
   let beetles = b.bot.memory.get('beetles') || 0
   beetles = beetles + 1
   b.bot.memory.set('beetles', beetles)

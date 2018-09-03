@@ -1,6 +1,6 @@
 {
   "name": "bbot-boilerplate",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Gets you started prototyping bots with bBot",
   "main": "index.js",
   "license": "MIT",
@@ -15,7 +15,7 @@
     "flag": "🇦🇺"
   },
   "dependencies": {
-    "bbot": "1.0.1"
+    "bbot": "1.1.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.3"
