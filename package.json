@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "Gets you started prototyping bots with bBot",
   "main": "index.js",
-  "license": "MIT",
+  "repository": "git@github.com:Amazebot/bbot-boilerplate.git",
   "author": "Tim Kinnane <tim.kinnane@amazebot.chat>",
   "contributors": [],
+  "license": "MIT",
+  "private": false,
   "engines": {
     "node": "> 8.0.0",
     "npm": "> 5.0.0"
